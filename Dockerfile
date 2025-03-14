@@ -2,7 +2,6 @@
 
 FROM ghcr.io/linuxserver/baseimage-alpine-nginx:3.20
 
-# set version label
 ARG BUILD_DATE
 ARG VERSION
 ARG GROCY_RELEASE
@@ -28,12 +27,11 @@ RUN \
   echo "**** install grocy ****" && \
   mkdir -p /app/www && \
   if [ -z ${GROCY_RELEASE+x} ]; then \
-    GROCY_RELEASE=$(curl -sX GET "https://api.github.com/repos/grocy/grocy/releases/latest" \
-    | awk '/tag_name/{print $4;exit}' FS='[""]'); \
+    GROCY_RELEASE=$(curl -s "https://api.github.com/repos/kampi/grocy/releases/latest" | jq -r .tag_name); \
   fi && \
   curl -o \
     /tmp/grocy.tar.gz -L \
-    "https://github.com/grocy/grocy/archive/${GROCY_RELEASE}.tar.gz" && \
+    "https://github.com/kampi/grocy/archive/${GROCY_RELEASE}.tar.gz" && \
   tar xf \
     /tmp/grocy.tar.gz -C \
     /app/www/ --strip-components=1 && \
